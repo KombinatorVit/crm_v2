@@ -1,11 +1,11 @@
-import  {FC, useEffect} from "react";
+import {FC, useEffect} from "react";
 import {loginWithTelegram} from "../store/thunks/auth";
 import {logout} from "../store/slice/authSlice";
-import {useAppDispatch} from "../utils/hooks";
+import {useDispatch, useSelector} from "react-redux";
 
 const AuthComponent: FC = () => {
-    const dispatch = useAppDispatch();
-    const isLoggedIn = useAppDispatch((state) => state.auth.isLoggedIn);
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     console.log(isLoggedIn);
 
     useEffect(() => {
