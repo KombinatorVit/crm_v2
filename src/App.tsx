@@ -6,7 +6,6 @@ function App() {
         <>
             <p>
                 Hello Amigo!!! test!!!
-                <h2>murk</h2>
             </p>
         </>
     );
