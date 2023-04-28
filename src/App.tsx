@@ -1,12 +1,15 @@
 import "./App.css";
+import AuthComponent from "./components/AuthComponent";
+import store from "./store";
+import {Provider} from "react-redux";
 
 function App() {
 
     return (
         <>
-            <p>
-                Hello Amigo!!! test!!!
-            </p>
+            <Provider store={store}>
+                <AuthComponent/>
+            </Provider>
         </>
     );
 }
