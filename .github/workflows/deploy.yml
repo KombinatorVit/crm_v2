@@ -41,5 +41,5 @@ jobs:
             source ~/.nvm/nvm.sh
             cd ~/crm_v2
             npm install
-            npm run dev
+            npm  dev
             pm2 restart crm_v2
