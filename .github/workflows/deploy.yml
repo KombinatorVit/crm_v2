@@ -24,7 +24,7 @@ jobs:
   build-client:
     if: "contains(github.event.commits[0].message, '[need build client]')"
     timeout-minutes: 2
-    needs: [update-files]
+    needs: [ update-files ]
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Client
@@ -32,7 +32,7 @@ jobs:
         with:
           host: ${{secrets.HOST}}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSHKEY }}
+          key: ${{ secrets.SSKEY }}
           port: ${{ secrets.PORT }}
           script: |
             export NVM_DIR=~/.nvm
