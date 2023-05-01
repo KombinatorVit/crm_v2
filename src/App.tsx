@@ -1,17 +1,20 @@
-import "./App.css";
-import AuthComponent from "./components/AuthComponent";
-import store from "./store";
-import {Provider} from "react-redux";
+import React from "react";
+import { Outlet, Route, Routes } from "react-router-dom";
+import Home from "./pages/HomePage";
+import Login from "./pages/LoginPage";
 
-function App() {
+
+const App: React.FC = () => {
 
     return (
-        <>
-            <Provider store={store}>
-                <AuthComponent/>
-            </Provider>
-        </>
+        <div>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+            </Routes>
+            <Outlet />
+        </div>
     );
-}
+};
 
 export default App;
