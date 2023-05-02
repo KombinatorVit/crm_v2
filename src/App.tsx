@@ -1,20 +1,25 @@
-import React from "react";
-import { Outlet, Route, Routes } from "react-router-dom";
-import Home from "./pages/HomePage";
-import Login from "./pages/LoginPage";
+import {Route, Routes} from "react-router-dom";
+import PrivateRouter from "./utils/router/PrivateRouter";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
 
 
-const App: React.FC = () => {
+function App() {
+    const telegramApiToken = import.meta.env.VITE_TELEGRAM_API_TOKEN;
+    console.log(telegramApiToken);
+
+
+
 
     return (
-        <div>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-            </Routes>
-            <Outlet />
-        </div>
-    );
-};
+        <Routes>
+            <Route element={<PrivateRouter/>}>
+                <Route path={"/"} element={<HomePage/>}/>
+            </Route>
+            <Route path={"login"} element={<LoginPage/>}/>
+        </Routes>
+    )
+        ;
+}
 
 export default App;

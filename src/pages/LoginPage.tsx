@@ -1,24 +1,27 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {telegramLogin} from "../store/slice/authSlice";
+import React from "react";
+import {useDispatch} from "react-redux";
+import {login} from "../store/slice/authSlice";
+import TelegramWidget from "./TelegramWidget";
 
-function Login() {
-    const navigate = useNavigate();
-    const [user, setUser] = useState<any>({});
+function LoginPage() {
 
-    function onTelegramAuth(user: any) {
-        setUser(user);
-        const { id, auth_date, hash, first_name, last_name, username, photo_url } = user;
-        console.log(user);
-        telegramLogin({ id, auth_date, hash, first_name, last_name, username, photo_url });
-        navigate("/");
-    }
+
+    const user = {
+        id: "",
+        auth_date: "",
+        hash: "",
+        first_name: "",
+        last_name: "",
+
+    };
 
     return (
         <div>
-            <h1>Login Page</h1>
+            <h1>Login with Telegram</h1>
+            <button onClick={() => dispatch(login(user))}> Тыкни на меня</button>
+            <TelegramWidget />
         </div>
     );
 }
 
-export default Login;
+export default LoginPage;

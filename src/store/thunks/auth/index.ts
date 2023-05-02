@@ -1,7 +1,7 @@
 import axios from "axios/index";
 import Cookies from "js-cookie";
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {setAuthToken, User} from "../../slice/authSlice";
+import {setAuthToken, User} from "../../slice/auth";
 
 
 

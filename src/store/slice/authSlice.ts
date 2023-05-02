@@ -1,66 +1,93 @@
-import {createSlice} from "@reduxjs/toolkit";
-import axios from "axios";
-import Cookies from "js-cookie";
+import axios from 'axios';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface User {
-    id: number;
-    username: string;
+interface AuthState {
+    accessToken: string | null;
+    expiresTime: number | null;
+    loading: boolean;
+    error: string | null;
+}
+
+interface AuthRequestParams {
+    id: string;
     auth_date: string;
     hash: string;
     first_name?: string;
     last_name?: string;
+    username?: string;
     photo_url?: string;
 }
 
-
-interface AuthState {
-    isAuthenticated: boolean;
-    accessToken: string | null;
-    error: string | null;
-}
-
 const initialState: AuthState = {
-    isAuthenticated: false,
     accessToken: null,
+    expiresTime: null,
+    loading: false,
     error: null,
 };
 
+export const login = createAsyncThunk(
+    'auth/login',
+    async (params: AuthRequestParams) => {
+        const url = 'https://api-v1.nzt-team.com/auth/login';
+
+        const response = await axios.get(url, {
+            params: {
+                id: params.id,
+                auth_date: params.auth_date,
+                hash: params.hash,
+                first_name: params.first_name,
+                last_name: params.last_name,
+                username: params.username,
+                photo_url: params.photo_url,
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${import.meta.env.VITE_TELEGRAM_API_TOKEN}`
+            },
+        });
+
+        const data = response.data;
+
+        if (response.status !== 200) {
+            throw new Error(data.message);
+        }
+
+        return data.data;
+    }
+);
+
 export const authSlice = createSlice({
-    name: "auth",
+    name: 'auth',
     initialState,
     reducers: {
-        loginSuccess: (state, action) => {
-            state.isAuthenticated = true;
-            state.accessToken = action.payload;
-            state.error = null;
-        },
-        logoutSuccess: (state) => {
-            state.isAuthenticated = false;
+        resetAuth: (state) => {
             state.accessToken = null;
+            state.expiresTime = null;
+            state.loading = false;
             state.error = null;
         },
-        setError: (state, action) => {
-            state.error = action.payload;
-        },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(login.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(login.fulfilled, (state, action: PayloadAction<{ access_token: string, expires_time: number }>) => {
+                state.accessToken = action.payload.access_token;
+                state.expiresTime = action.payload.expires_time;
+                state.loading = false;
+                state.error = null;
+            })
+            .addCase(login.rejected, (state, action) => {
+                state.accessToken = null;
+                state.expiresTime = null;
+                state.loading = false;
+                state.error = action.error.message || 'Something went wrong.';
+            });
     },
 });
 
-export const {loginSuccess, logoutSuccess, setError} = authSlice.actions;
-
-// Thunk action for Telegram login
-export const telegramLogin = (payload: any) => async (dispatch: any) => {
-    try {
-        const response = await axios.get(
-            `https://api-v1.nzt-team.com/auth/login?id=${payload.id}&auth_date=${payload.auth_date}&hash=${payload.hash}&first_name=${payload.first_name}&last_name=${payload.last_name}&username=${payload.username}&photo_url=${payload.photo_url}`
-        );
-        console.log(response);
-        const {access_token, expires_time} = response.data.data;
-
-        Cookies.set("token", access_token, {expires: expires_time});
-        dispatch(loginSuccess(access_token));
-    } catch (error) {
-        dispatch(setError(error.response.data.message));
-    }
-};
+export const { resetAuth } = authSlice.actions;
 
 export default authSlice.reducer;
