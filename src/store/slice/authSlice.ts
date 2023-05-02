@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import axios from "axios";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 interface AuthState {
     accessToken: string | null;
@@ -26,9 +26,9 @@ const initialState: AuthState = {
 };
 
 export const login = createAsyncThunk(
-    'auth/login',
+    "auth/login",
     async (params: AuthRequestParams) => {
-        const url = 'https://api-v1.nzt-team.com/auth/login';
+        const url = "https://api-v1.nzt-team.com/auth/login";
 
         const response = await axios.get(url, {
             params: {
@@ -41,8 +41,8 @@ export const login = createAsyncThunk(
                 photo_url: params.photo_url,
             },
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${import.meta.env.VITE_TELEGRAM_API_TOKEN}`
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${import.meta.env.VITE_TELEGRAM_API_TOKEN}`
             },
         });
 
@@ -51,13 +51,13 @@ export const login = createAsyncThunk(
         if (response.status !== 200) {
             throw new Error(data.message);
         }
-
+        console.log(data.data);
         return data.data;
     }
 );
 
 export const authSlice = createSlice({
-    name: 'auth',
+    name: "auth",
     initialState,
     reducers: {
         resetAuth: (state) => {
@@ -83,11 +83,11 @@ export const authSlice = createSlice({
                 state.accessToken = null;
                 state.expiresTime = null;
                 state.loading = false;
-                state.error = action.error.message || 'Something went wrong.';
+                state.error = action.error.message || "Something went wrong.";
             });
     },
 });
 
-export const { resetAuth } = authSlice.actions;
+export const {resetAuth} = authSlice.actions;
 
 export default authSlice.reducer;
