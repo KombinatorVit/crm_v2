@@ -1,20 +1,45 @@
-import axios from "axios/index";
-import Cookies from "js-cookie";
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {setAuthToken, User} from "../../slice/auth";
+import {instanceAuth} from "../../../utils/axios";
+
+//типизировать response
+
+interface AuthRequestParams {
+    id: string;
+    auth_date: string;
+    hash: string;
+    first_name?: string;
+    last_name?: string;
+    username?: string;
+    photo_url?: string;
+}
 
 
+export const login = createAsyncThunk(
+    "auth/login",
+    async (params: AuthRequestParams, {rejectWithValue}) => {
+        try {
 
-export const login = createAsyncThunk("https://api-v1.nzt-team.com/auth/login", async (payload: User, {rejectWithValue}) => {
-    try {
-        const response = await axios.get(`/auth/login`, {
-            params: payload,
-        });
-        const {access_token, expires_time} = response.data.data;
-        Cookies.set("token", access_token, {expires: expires_time});
-        setAuthToken(access_token);
-        return response.data.data;
-    } catch (error) {
-        return rejectWithValue(error.response.data);
+            const response = await instanceAuth.get("auth/login", {
+                params: {
+                    id: params.id,
+                    auth_date: params.auth_date,
+                    hash: params.hash,
+                    first_name: params.first_name,
+                    last_name: params.last_name,
+                    username: params.username,
+                    photo_url: params.photo_url,
+                },
+            });
+
+            const data = response.data;
+
+            if (response.status !== 200) {
+                throw new Error("My Error");
+            }
+            console.log(data.data);
+            return data.data;
+        } catch (e) {
+            return rejectWithValue(e.message);
+        }
     }
-});
+);

@@ -1,15 +1,26 @@
 import {useEffect} from "react";
-import {useDispatch} from "react-redux";
-import {login} from "../store/slice/authSlice";
+import {login} from "../../store/thunks/auth";
+import {useAppDispatch} from "../../utils/hooks";
+
+export interface IUser {
+    id: string,
+    auth_date: number,
+    hash: string,
+    first_name?: string,
+    last_name?: string,
+    username: string,
+    photo_url?: string
+}
+
 
 const TelegramWidget: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
 
     useEffect(() => {
         const script = document.createElement("script");
-        const onTelegramAuth = (user: any) => {
-            alert("Logged in as " + user.first_name + " " + user.last_name + " (" + user.id + (user.username ? ", @" + user.username : "" + "" + user.hash) + ")");
+        const onTelegramAuth = (user: IUser) => {
+            console.log(user);
             dispatch(login(user));
         };
         window.onTelegramAuth = onTelegramAuth;

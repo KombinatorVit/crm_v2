@@ -2,7 +2,7 @@ import {Navigate, Outlet} from "react-router-dom";
 
 
 const PrivateRouter = () => {
-    const auth = false;
+    const auth = true;
 
 
 
