@@ -1,12 +1,12 @@
 import React from "react";
 import TelegramWidget, {IUser} from "./TelegramWidget";
-import {useStyles} from "./styles";
+// import {useStyles} from "./styles";
 import {useDispatch} from "react-redux";
 import {login} from "../../store/thunks/auth";
 
 
 function LoginPage() {
-    const classes = useStyles();
+    // const classes = useStyles();
     const dispatch = useDispatch();
 
 
@@ -26,8 +26,8 @@ function LoginPage() {
     }
 
     return (
-
-        <div className={classes.root}>
+//className={classes.root}
+        <div >
             <button onClick={onClickHandler}> test</button>
             <h1>Login with Telegram</h1>
             <TelegramWidget/>
